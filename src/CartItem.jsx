@@ -7,30 +7,35 @@ const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
+  // Calculate total quantity of items in the cart
+  const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {
     return cart.reduce((total, item) => total + calculateTotalCost(item), 0).toFixed(2);
   };
 
+  // Handle continuing shopping
   const handleContinueShopping = (e) => {
-    e.preventDefault();
-    onContinueShopping(); // Callback to continue shopping
+    onContinueShopping();
   };
 
+  // Handle incrementing quantity of an item
   const handleIncrement = (item) => {
-    // Increment the item's quantity
     dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
+  // Handle decrementing quantity of an item
   const handleDecrement = (item) => {
-    // Only decrement if quantity is greater than 1
-    if (item.quantity > 1) {
+    if (item.quantity === 1) {
+      dispatch(removeItem(item.name));
+    } else {
       dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
     }
   };
 
+  // Handle removing an item from the cart
   const handleRemove = (item) => {
-    // Remove the item from the cart
     dispatch(removeItem(item.name));
   };
 
@@ -39,8 +44,14 @@ const CartItem = ({ onContinueShopping }) => {
     return (item.cost * item.quantity).toFixed(2);
   };
 
+  // Checkout function (placeholder)
+  const handleCheckoutShopping = (e) => {
+    alert('Functionality to be added for future reference');
+  };
+
   return (
     <div className="cart-container">
+      <h2 style={{ color: 'black' }}>Total Quantity: {totalQuantity}</h2>
       <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
       <div>
         {cart.map(item => (
@@ -64,7 +75,7 @@ const CartItem = ({ onContinueShopping }) => {
       <div className="continue_shopping_btn">
         <button className="get-started-button" onClick={handleContinueShopping}>Continue Shopping</button>
         <br />
-        <button className="get-started-button1">Checkout</button>
+        <button className="get-started-button1" onClick={handleCheckoutShopping}>Checkout</button>
       </div>
     </div>
   );
